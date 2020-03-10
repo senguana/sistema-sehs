@@ -1,0 +1,271 @@
+ <?php
+$metodo = $_GET['op'];
+require '../models/ModeloCampania.php';
+$objCampania = new ModeloCampania();
+switch ($metodo) {
+        case 'listarActivo':
+        $varListar = $objCampania->listarActivo();
+          $json = array(); 
+
+          while ($result=$varListar->fetch(PDO::FETCH_OBJ)){
+            $json[] = array(
+                'id'=>$result->id_campania,
+                'nombre_campania'=> $result->name_campania,
+                'fech_inicio'=>$result->date_start,
+                'fech_fin'=>$result->date_end,
+                'estado'=>$result->estado
+            );
+
+          }
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        
+          
+        break;
+    case 'listarInactivo':
+        $varListar = $objCampania->listarInactivo();
+          $json = array(); 
+
+          while ($result=$varListar->fetch(PDO::FETCH_OBJ)){
+            $json[] = array(
+                'id'=>$result->id_campania,
+                'nombre_campania'=> $result->name_campania,
+                'fech_inicio'=>$result->date_start,
+                'fech_fin'=>$result->date_end,
+                'estado'=>$result->estado
+            );
+
+          }
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        break;
+    case 'guardar':
+        $nombre_campania        = $_POST['txt_nombre_campania'];
+        $fech_inicio            = $_POST['txt_fecha_inicio'];
+        $fech_fin               = $_POST['txt_feha_fin'];
+        $date_added             =date("Y-m-d H:i:s");
+        
+        $json = array(); 
+        if (empty($_POST['editId_campania'])) {
+                $varRegistrar = $objCampania->registrar($nombre_campania, $fech_inicio, $fech_fin,$date_added);
+                if ($varRegistrar) {
+                    echo "<div class='alert alert-success alert-dismissible' role='alert'>
+                        <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span>
+                        </button>
+                        <strong>Se ha registrado Exitosamente</strong>
+                      </div>";
+                } else {
+                    echo "<div class='alert alert-warning alert-dismissible' role='alert'>
+                        <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span>
+                        </button>
+                        <strong>¡Error al registrar el usuario!</strong>.
+                      </div>";
+                }
+            
+        }else{
+            $id_campania  = $_POST['editId_campania'];
+            $estado       = $_POST['estado'];
+            $varActualizar = $objCampania->actualizar($id_campania, $nombre_campania, $fech_inicio, $fech_fin, $date_added, $estado);
+            if ($varActualizar) {
+                echo "<div class='alert alert-success alert-dismissible' role='alert'>
+                        <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span>
+                        </button>
+                        <strong>¡Tus datos han sido actualizados correctamente!</strong>
+                      </div>";
+            } else {
+                echo '<div class="alert alert-danger alert-dismissible fade in col-sm-3 animated bounceInDown" role="alert" style="position:fixed; top:70px; right:10px; z-index:10;"> 
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                  <h4 class="text-center">OCURRIO UN ERROR</h4>
+                  <p class="text-center">
+                    Asegurese que los datos ingresados son validos. Por favor intente nuevamente</p>
+                  </p>
+              </div>';
+            }
+        }
+       
+           
+        break;
+
+    case 'actualizar_estado':
+        $id_campania = $_POST['txt_campania_id'];
+        $estado  = $_POST['estado'];
+        $varActualizar_estado = $objCampania->actualizar_estado($id_campania, $estado);
+        if ($varActualizar_estado) {
+            return true;
+        }
+        break;
+
+    case 'eliminar':
+        $id_person = $_POST['id'];
+        $json = array(); 
+        $varEliminar = $objCampania->eliminar($id_person);
+        if ($varEliminar) {
+            $json[] = array('mensaje' => '1');
+        } else {
+            $json[] = array('mensaje' => '0');
+        }
+        echo json_encode($json);
+
+        break;
+    case 'buscar_campania':
+        $a = $_POST['usuario'];
+        $search = "%$a";
+        
+        $varBuscar_campania = $objCampania->Buscar_campania( $search );
+        if ($varBuscar_campania->rowCount() >0) {
+         echo '<span class="value text-danger">Este campaña si existe, por favor ingrese otro nombre de campaña</span>';
+        }
+
+        
+        break;
+    case 'getDetails':
+          $id_person = $_POST['id'];
+          $json = array();
+          $vargetDetails = $objCampania->getDetails($id_person);
+          $reg = $vargetDetails->fetch(PDO::FETCH_OBJ);
+
+          echo json_encode($reg);
+        break;
+}
+?>
+
+<div class="modal fade bs-example-modal-lg" id="btnEditar" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Actualizar datos ampaña</h4>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="mensaje1"></div>
+        <form id="actualizar_campania" id="demo-form" data-parsley-validate>
+          <div class="row">
+            <div class="col-md-12 col-sm-6">
+              <label for="nombre_campania">NOMBRE DE LA CAMPAÑA* :</label>
+              <input type="text" hidden="" name="editId_campania" id="editId_campania" value="" placeholder="">
+              <input type="text" id="edit_nombre_campania" class="form-control" name="txt_nombre_campania"  placeholder="Nombre de la campaña" />
+              <div class="mensaje"></div>
+              <br>
+            </div>
+             
+            <div class="col-md-6 col-sm-6 ">
+              <label for="txt_fecha_inicio">FECHA DE INICIO* :</label>
+              <input type="date" id="edit_fecha_inicio" class="form-control" name="txt_fecha_inicio"  placeholder="Fecha de inicio" required/>
+                
+            </div>
+
+            <div class="col-md-6 col-sm-6 ">
+              <label for="txt_feha_fin">FECHA DE FIN * :</label>
+              <input type="date" id="edit_feha_fin" class="form-control" name="txt_feha_fin" placeholder="Fecha de fin" required />
+            </div>
+            <div class="col-md-12 col-sm-12">
+              <br>
+              <label for="">ESTADO *:</label>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <p>ACTIVO:   
+              <input type="radio" class="flat" name="estado" id="estado1" value="1"  checked="" required /></p>
+            </div>
+              <div class="col-md-4 col-sm-4">
+                <p>
+                  INACTIVO:
+                  <input type="radio" class="flat" name="estado" id="estado0" value="0" />
+                </p>
+              </div>
+          </div>
+          <br/>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+            <button type="submit" class="btn btn-primary"><span class="fa fa-refresh"></span> Actualizar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade bs-example-modal-sm" id="btnEliminar" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">Eliminar Campaña</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">¿Esta seguro en eliminar los datos de?</p>
+        <h2 class="text-center fullname"></h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cancelar</button>
+        <button type="button" class="btn btn-danger id"><span class="fa fa-trash"></span> Si</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" id="btnEditarEstado" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">ESTADO*:</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="actualizar_estado">
+          <div class="row">  
+            <div class="col-md-6 col-sm-6">
+
+              <p>ACTIVO:
+            <input type="text" hidden="" name="txt_campania_id" id="txt_campania_id" value="">    
+            <input type="radio" class="flat" name="estado" id="estado" value="1" required /></p>
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <p>
+                INACTIVO:
+                <input type="radio" class="flat" name="estado" id="estado" value="0" checked="" required="" />
+              </p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cancelar</button>
+            <button type="submit" class="btn btn-primary "><span class="fa fa-refresh"></span> Guardar</button>
+          </div>
+        </form>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+init_autocomplete_colportor();
+  $("#nombre_colportor").keyup(function(e) {
+    var nombre_colportor = $("#nombre_colportor")
+    $.post('ajax/nueva_facturaAjax.php', {nombre_colportor:nombre_colportor}, function(r) {
+      var data = JSON.parse(r)
+      init_autocomplete_colportor(data)
+    })
+  })
+  function init_autocomplete_colportor(data) {
+      
+      
+      var colportorArray = $.map(data, function(value, key) {
+        return {
+        value: value,
+        data: key
+        };
+      });
+
+      // initialize autocomplete with custom appendTo
+      $('#nombre_colportor').autocomplete({
+        lookup: colportorArray
+      });
+      
+    };
