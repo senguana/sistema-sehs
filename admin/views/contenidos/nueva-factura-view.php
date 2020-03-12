@@ -19,7 +19,7 @@
         <div class="col-md-12">
           <div class="x_panel">
             <div class="x_title">
-              <h2><i class='glyphicon glyphicon-edit'></i> Nueva Factura</h2>
+              <h2><i class='glyphicon glyphicon-edit'></i> Nuevo pedido</h2>
               <div class="text-right mtop20">
                 <a href="<?php echo SERVERURL; ?>admin/facturas" class="btn btn-sm btn-info"><i class="fa fa-angle-double-left"></i> Atrás</a>
               </div>

@@ -21,7 +21,17 @@ class ModeloCampania extends mainModel
         $sql->execute();
         return $sql;
     }
-    
+     protected function agregar_modelo_campania_usuario($datos)
+    {
+        $sql= mainModel::conectar()->prepare("INSERT INTO `add_campania_user_provincia`(`CampaniaCodigo`, `ColportorCodigo`, `IdProvincia`, `IdCiudad`) VALUES (:IdCampania,:CodigoUsuario,:Provincia,:Ciudad)");
+        $sql->bindParam(":IdCampania", $datos['IdCampania']);
+        $sql->bindParam(":CodigoUsuario", $datos['CodigoUsuario']);
+        $sql->bindParam(":Provincia", $datos['Provincia']);
+        $sql->bindParam(":Ciudad", $datos['Ciudad']);
+
+        $sql->execute();
+        return $sql;
+    }
     protected function datos_campania_modelo($tipo, $codigo)
     {
         if ($tipo=="Unico") {

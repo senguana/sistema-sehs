@@ -84,16 +84,17 @@ class ControladorColportor extends ModeloColportor
         return mainModel::sweet_alert($alerta);
     }
 
-    public function tabla_controlador_colportor($privilegio, $tipo)
+    public function tabla_controlador_colportor($privilegio,$tipo,$provincia)
     {
         $privilegio = mainModel::limpiar_cadena($privilegio);
         $tipo = mainModel::limpiar_cadena($tipo);
+        $provincia = mainModel::limpiar_cadena($provincia);
         $tabla = "";
 
         $conexion = mainModel::conectar();
 
         $datos = $conexion->query(
-            "SELECT * FROM colportor c INNER JOIN pais p ON c.ColportorPaisId = p.id_pais INNER JOIN provincia pv ON c.ColportorProvinciaId = pv.id_provincia INNER JOIN ciudad cd ON c.ColportorCiudadId = cd.id_ciudad");
+            "SELECT * FROM colportor c INNER JOIN pais p ON c.ColportorPaisId = p.id_pais INNER JOIN provincia pv ON c.ColportorProvinciaId = pv.id_provincia INNER JOIN ciudad cd ON c.ColportorCiudadId = cd.id_ciudad WHERE ColportorProvinciaId ='$provincia'");
 
         $registros = $datos->fetchAll();
 
@@ -167,7 +168,89 @@ class ControladorColportor extends ModeloColportor
                  </div>';
         return $tabla;
     }
-  
+     public function admin_tabla_controlador_colportor($privilegio,$tipo)
+    {
+        $privilegio = mainModel::limpiar_cadena($privilegio);
+        $tipo = mainModel::limpiar_cadena($tipo);
+        $tabla = "";
+
+        $conexion = mainModel::conectar();
+
+        $datos = $conexion->query(
+            "SELECT * FROM colportor c INNER JOIN pais p ON c.ColportorPaisId = p.id_pais INNER JOIN provincia pv ON c.ColportorProvinciaId = pv.id_provincia INNER JOIN ciudad cd ON c.ColportorCiudadId = cd.id_ciudad ");
+
+        $registros = $datos->fetchAll();
+
+        $tabla.='<div class="card-box table-responsive">
+                    <table id="datatable" class="table table-striped jambo_table bulk_action" style="width:100%">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="th-sm">Código</th>
+                            <th class="th-sm">DNI</th>
+                            <th class="th-sm">Nombres</th>
+                            <th class="th-sm">Apellidos</th>
+                            <th class="th-sm">Genero</th>
+                            <th class="th-sm">Agregado</th>
+                            <th class="th-sm">Estado</th>';
+                            if ($privilegio <=2) {
+                                $tabla.='<th style="width: 2%"></th>';
+                            }                        
+                         $tabla.='</tr>
+                        </thead>
+                        <tbody>';
+        if ($datos->rowCount()>0) {
+            $contador = 1;
+            foreach ($registros as $rows) {
+                $tabla.='
+                <tr>
+                    <td>'.$contador.'</td>
+                    <td>'.$rows['ColportorCodigo'].'</td>
+                    <td>'.$rows['DNI'].'</td>
+                    <td>'.$rows['ColportorNombre'].'</td>
+                    <td>'.$rows['ColportorApellido'].'</td>
+                    <td>'.$rows['ColportorGenero'].'</td>
+                    <td>'.$rows['ColportorFechaAdd'].'</td>';
+                    
+                    if ($rows['ColportorEstado']==1) {
+                       $tabla.='<td><span class="badge badge-success">Activo</span></td>';
+                    }
+                   
+                    if ($privilegio<=1) {
+                        $tabla.='<td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">
+                          Acción
+                        </button>
+                        <div class="dropdown-menu">
+                         <a class="dropdown-item" href="'.SERVERURL.'admin/nueva-factura"><i class="fa fa-gear"></i> Más</a>
+                         <a class="dropdown-item crear_usuario" data-codigo="'.$rows['ColportorCodigo'].'" href="'.SERVERURL.'admin/crear-usuario"><i class="fa fa-user"></i> Crear usuario</a>
+                          <a class="dropdown-item verDetalle" data-codigo="'.$rows['ColportorCodigo'].'" href="#"><i class="fa fa-eye"></i> Ver</a>
+                          <a class="dropdown-item btnEditar" data-codigo="'.$rows['ColportorCodigo'].'" href="#"><i class="fa fa-edit"></i> Editar</a>
+                          <a class="dropdown-item btnEliminar" data-codigo="'.$rows['ColportorCodigo'].'" href="#"><i class="fa fa-trash"></i> Eliminar</a>
+                        </div>
+                    </div>
+                        </td>';
+                    }
+ 
+                       
+                $tabla.='</tr>';
+                $contador++;
+            }
+        }else{
+            $tabla.='
+            <tr>
+                <td colspan="9"><center> No hay registros en el sistema</center> </td>
+            </tr>
+            ';
+        }
+
+        $tabla.='     </tbody>
+                    </table>
+                 </div>';
+        return $tabla;
+    }
     public function datos_controlador_colportor($tipo, $codigo)
     {
         $codigo = mainModel::limpiar_cadena($codigo);

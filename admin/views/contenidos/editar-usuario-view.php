@@ -5,11 +5,17 @@
       <div class="title_left">
         <h3>ADMINISTRACIÓN DE USUARIOS</h3>
       </div>
-      <?php $pagina = explode("/?", $_GET['views']); echo $pagina[0]; ?>
+      <?php
+       require_once './controllers/ControladorUsuario.php';
+       $insUser = new ControladorUsuario();
+       $pagina = explode("/", $_GET['views']);
+       $filesUser = $insUser->datos_controlador_usuario("Unico", $pagina[1]);
+       $campos = $filesUser->fetch(); 
+       ?>
       <div class="title_right">
         <div class="col-md-5 col-sm-5  form-group pull-right top_search">
           <div class="input-group">
-            <input type="text" id="codigo_colportor1" class="form-control" placeholder="Buscar usuario..." readonly="">
+            <input type="text" id="codigo_colportor1" class="form-control" placeholder="Buscar usuario..." value="<?php echo $campos['ColportorCodigo']; ?>" readonly="">
              
               <button class="btn btn-primary tablaColport" type="button"><i class="fa fa-search"></i>Buscar</button>
             
@@ -22,7 +28,7 @@
       <div class="col-md-12 col-sm-12 ">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Creando nuevo usuario</h2>
+            <h2>Actualizar usuario</h2>
             <div class="clearfix"></div>
           </div>   
           <div class="x_content">
@@ -33,7 +39,7 @@
                 <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Colportor <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 ">
-                  <input type="text" id="nombres" value="" readonly="" class="form-control ">
+                  <input type="text" id="nombres" value="<?php echo $campos['ColportorNombre'].' '.$campos['ColportorApellido']; ?>" readonly="" class="form-control ">
                   <input type="text" hidden="" id="codigo_colportor" name="codigo_colportor-reg" value="" readonly="" class="form-control ">
                 </div>
               </div>
@@ -41,7 +47,7 @@
                 <label class="col-form-label col-md-3 col-sm-3 label-align" for="usuario">Usuario<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 ">
-                  <input type="text" id="usuario" name="usuario-reg" class="form-control" placeholder="Usuario">
+                  <input type="text" id="usuario" name="usuario-reg" class="form-control" value="<?php echo $campos['CuentaUsuario']; ?>" placeholder="Usuario">
                 </div>
               </div>
               <div class="item form-group">
@@ -111,9 +117,9 @@
               <div class="ln_solid"></div>
               <div class="item form-group">
                 <div class="col-md-6 col-sm-6 offset-md-3">
-                  <a href="<?php echo SERVERURL; ?>admin/usuario" class="btn btn-primary" type="button">Cancelar</a>
+                  <a href="<?php echo SERVERURL; ?>admin/usuario" class="btn btn-primary" type="button">Registro usuario</a>
                   <button class="btn btn-primary" type="reset">Limpiar</button>
-                  <button type="submit" class="btn btn-success">Crear usuario</button>
+                  <button type="submit" class="btn btn-success">Actualizar usuario</button>
                 </div>
               </div>
 

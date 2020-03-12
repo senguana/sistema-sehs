@@ -1,8 +1,15 @@
+<?php require_once 'controllers/ControladorUsuario.php'; ?>
+<?php
+ $usuario = new ControladorUsuario();
+ if ( $_SESSION['cuenta_tipo_sehs']!= 1) {
+   echo $lc->forzar_cerrar_sesion_controlador();
+ }
+ ?>
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Usuario</h3>
+        <h3>ADMINISTRACIÓN DE USUARIOS</h3>
       </div>
     </div>
 
@@ -19,52 +26,13 @@
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <div id="alert_message"></div>
-            <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#Activos" role="tab" aria-controls="home" aria-selected="true">Activos</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#Inactivos" role="tab" aria-controls="profile" aria-selected="false">Inactivos</a>
-              </li>
-            </ul>
-            <?php include_once 'views/modal/ModalUsuario.php'; ?>
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade show active" id="Activos" role="tabpanel" aria-labelledby="home-tab">
-                <div class="card-box table-responsive">
-                    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
-                      <thead>
-                          <tr>
-                            <th>Dni</th>
-                            <th>Lider</th>
-                            <th>Usuario</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                            <th style="width: 11%">Acción</th>
-                          </tr>
-                        </thead>
-                      <tbody id="dataUsuario"></tbody>
-                    </table>
-                  </div>
-              </div>
-              <div class="tab-pane fade" id="Inactivos" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="card-box table-responsive">
-                    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
-                      <thead>
-                          <tr>
-                            <th>Dni</th>
-                            <th>Lider</th>
-                            <th>Usuario</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                            <th style="width: 10%">Acción</th>
-                          </tr>
-                        </thead>
-                      <tbody id="dataUsuario1"></tbody>
-                    </table>
-                  </div>
-              </div>
-            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                  <?php 
+                    echo $usuario->tabla_controlador_usuario($_SESSION['privilegio_sehs'],  $_SESSION['cuenta_tipo_sehs']);
+                   ?>
+                </div>  
+            </div>      
           </div>
         </div>
       </div>

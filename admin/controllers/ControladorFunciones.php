@@ -21,7 +21,13 @@ class ControladorFunciones extends ModeloFunciones
 
         return $datos;
     }
+    public function lisTablaControladorProvincia()
+    {
+        $datos = mainModel::ejecutar_consulta_simple("SELECT * FROM ciudad c INNER JOIN provincia p ON c.provinciaId = p.id_provincia");
 
+
+        return $datos;
+    }
     
 
     

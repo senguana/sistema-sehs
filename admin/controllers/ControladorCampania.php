@@ -67,7 +67,36 @@ class ControladorCampania extends ModeloCampania
 
         return mainModel::sweet_alert($alerta);
     }
+    public function agregar_controlador_campania_usuario()
+    {
+        $codigo_usuario = mainModel::limpiar_cadena($_POST['codigo_usuario']);
+        $id_campania = mainModel::limpiar_cadena($_POST['nombre_campania']);
+        $provincia = mainModel::limpiar_cadena($_POST['optionsProvincia']);
+        $ciudad = mainModel::limpiar_cadena($_POST['optionsCiudad']);
 
+        $dataCU=[
+            "CodigoUsuario"=>$codigo_usuario,
+            "IdCampania"=>$id_campania,
+            "Provincia"=>$provincia,
+            "Ciudad"=>$ciudad
+        ];
+        $guardarCU = ModeloCampania::agregar_modelo_campania_usuario($dataCU);
+        if ($guardarCU->rowCount()>=1){
+            $alerta= [
+            "Alerta"=>"limpiar",
+            "Titulo"=>"Asignación Campania",
+            "Texto"=>"Asignación de usuario a la Campania se registro exitosamente!",
+            "Tipo"=>"success"];
+
+        }else{
+            $alerta= [
+            "Alerta"=>"simple",
+            "Titulo"=>"Ocurrio un error inesperado",
+            "Texto"=>"No se pudo realizar asignación de usuario a la Campania",
+            "Tipo"=>"error"];
+        }
+         return mainModel::sweet_alert($alerta);
+    }
     public function datos_controlador_campania_activos($privilegio, $tipo)
     {
         $privilegio = mainModel::limpiar_cadena($privilegio);
@@ -139,6 +168,64 @@ class ControladorCampania extends ModeloCampania
         $tabla.='     </tbody>
                     </table>
                  </div>';
+        return $tabla;
+    }
+
+    public function tabla_controlador_campania_usuario($privilegio, $tipo)
+    {
+        $privilegio = mainModel::limpiar_cadena($privilegio);
+        $tipo = mainModel::limpiar_cadena($tipo);
+        $tabla = "";
+
+        $conexion = mainModel::conectar();
+
+        $datos = $conexion->query(
+            "SELECT * FROM add_campania_user_provincia ad INNER JOIN campania cp ON ad.CampaniaCodigo = cp.Id INNER JOIN colportor c ON ad.ColportorCodigo=c.ColportorCodigo INNER JOIN provincia p ON ad.IdProvincia = p.id_provincia INNER JOIN ciudad cd ON ad.IdCiudad = cd.id_ciudad");
+
+        $registros = $datos->fetchAll();
+
+        if ($datos->rowCount()>0) {
+            $contador = 1;
+            foreach ($registros as $rows) {
+                $tabla.='<div class="col-md-4 col-sm-4  profile_details">
+                        <div class="well profile_view">
+                          <div class="col-sm-12">
+                            <h4 class="brief"><i>Usuarios de la Campaña</i></h4>
+                            <div class="left col-md-7 col-sm-7">
+                              <h2>'.$rows['ColportorNombre']." ".$rows['ColportorApellido'].'</h2>
+                              <p><strong>Campaña: </strong><span class="badge badge-success"> '.$rows['NombreCampania'] .'</span></p>
+                              <p><strong>Provincia: </strong> '.$rows['NombreProvincia']. ' / '.$rows['NombreCiudad'] .' </p>
+                              <ul class="list-unstyled">
+                                <li><i class="fa fa-building"></i> Dirección: '.$rows['ColportorDireccion'].' </li>
+                                <li><i class="fa fa-envelope-o"></i> Email: '.$rows['ColportorEmail'] .'</li>
+                                <li><i class="fa fa-phone"></i> Celular #: '.$rows['ColportorCelular'] .'</li>
+                              </ul>
+                            </div>
+                            <div class="right col-md-5 col-sm-5 text-center">';
+                            if ($rows['ColportorGenero']=="Masculino") {
+                                $tabla.='<img src="'.SERVERURL.'admin/assets/images/avatars/StudetMaleAvatar.png" alt="" class="img-circle img-fluid">';
+                            }else{
+                                $tabla.='<img src="'.SERVERURL.'admin/assets/images/avatars/StudetFemaleAvatar.png" alt="" class="img-circle img-fluid">';
+                            }
+
+                              
+                            $tabla.='</div>
+                          </div>
+                          <div class=" profile-bottom text-center">
+                        
+                            <div class=" col-sm-6 emphasis">
+                              <button type="button" class="btn btn-danger btn-sm"> <i class="fa fa-trash">
+                                </i></i> </button>
+                              <button type="button" class="btn btn-primary btn-sm">
+                                <i class="fa fa-edit"> </i> 
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                ';
+            }
+        }    
         return $tabla;
     }
     public function datos_controlador_campania_inactivos($privilegio, $tipo)

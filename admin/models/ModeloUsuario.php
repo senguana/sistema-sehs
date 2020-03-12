@@ -18,10 +18,14 @@ class ModeloUsuario extends mainModel
         return $sql;
     }
     
-    protected function datos_modelo_libro($tipo, $codigo)
+    protected function datos_modelo_usuario($tipo, $codigo)
     {
         if ($tipo=="Unico") {
-            $query = mainModel::conectar()->prepare("SELECT * FROM libro WHERE codigoLibro=:Codigo");
+            $query = mainModel::conectar()->prepare("SELECT * FROM colportor c INNER JOIN cuenta ct ON c.CuentaCodigo = ct.CuentaCodigo WHERE ColportorCodigo=:Codigo");
+            $query->bindParam(":Codigo", $codigo);
+
+        }elseif ($tipo=="Unico1") {
+            $query = mainModel::conectar()->prepare("SELECT * FROM cuenta WHERE CuentaCodigo=:Codigo");
             $query->bindParam(":Codigo", $codigo);
 
         }elseif($tipo == "Conteo"){
@@ -46,6 +50,16 @@ class ModeloUsuario extends mainModel
         $query->bindParam(":Estado", $datos['Estado']);
         $query->bindParam(":Precio", $datos['PrecioLibro']);
         $query->bindParam(":fechAdd", $datos['dateAdd']);
+        $query->execute();
+
+        return $query;
+    }
+
+    protected function actualizar_modelo_usuario_user($datos)
+    {
+        $query = mainModel::conectar()->prepare("UPDATE cuenta SET CuentaUsuario=:Usuario WHERE CuentaCodigo=:Codigo");
+        $query->bindParam(":Usuario", $datos['Usuario']);
+        $query->bindParam(":Codigo", $datos['CodigoCuenta']);
         $query->execute();
 
         return $query;

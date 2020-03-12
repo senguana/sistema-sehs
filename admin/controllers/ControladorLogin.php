@@ -41,6 +41,7 @@ class ControladorLogin extends ModeloLogin
             }else{
             	$_SESSION['AdminNombre'] = $row['ColportorNombre'];
                 $_SESSION['AdminApellido'] = $row['ColportorApellido'];
+                $_SESSION['ColportorProvincia'] = $row['ColportorProvinciaId'];
             }
 			
             $_SESSION['CuentaCodigo'] = $row['id'];          

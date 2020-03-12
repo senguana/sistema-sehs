@@ -39,7 +39,7 @@ class ModeloAdministrador extends mainModel
 	protected function datos_administrador_modelo($tipo, $codigo)
 	{
 		if ($tipo=="Unico") {
-			$query = mainModel::conectar()->prepare("SELECT * FROM admin a INNER JOIN tb_mission tm ON a.AdminMisionId = tm.id_mission WHERE CuentaCodigo=:Codigo");
+			$query = mainModel::conectar()->prepare("SELECT * FROM admin  WHERE CuentaCodigo=:Codigo");
 			$query->bindParam(":Codigo", $codigo);
 
 		}elseif($tipo == "Conteo"){

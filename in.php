@@ -185,3 +185,86 @@ echo '<table id="datatable" class="table table-striped table-bordered" style="wi
         "Tipo"=>"error"];
 
             }
+
+
+
+             public function tabla_controlador_usuario($privilegio, $tipo)
+    {
+        $privilegio = mainModel::limpiar_cadena($privilegio);
+        $tipo = mainModel::limpiar_cadena($tipo);
+        $tabla = "";
+
+        $conexion = mainModel::conectar();
+
+        $datos = $conexion->query(
+            "SELECT * FROM colportor c INNER JOIN cuenta ct ON c.CuentaCodigo = ct.CuentaCodigo ORDER BY ColportorNombre ASC");
+
+        $registros = $datos->fetchAll();
+
+        $tabla.='<div class="card-box table-responsive">
+                    <table id="datatable" class="table table-striped jambo_table bulk_action" style="width:100%">
+                      <thead>
+                          <tr>
+                            <th></th>
+                            <th>#</th>
+                            <th>Dni</th>
+                            <th>Lider</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th class="accion" style="width: 11%;display:none;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        if ($datos->rowCount()>0) {
+            $contador = 1;
+            foreach ($registros as $rows) {
+                $tabla.='
+                <tr>
+                    <td><input type="checkbox" value="'.$rows['CuentaCodigo'] .'" ></th>
+                          </td>
+                    <td>'.$contador.'</td>
+                    <td>'.$rows['DNI'].'</td>
+                    <td>'.$rows['ColportorNombre']." ".$rows['ColportorApellido'].'</td>
+                    <td>'.$rows['CuentaUsuario'] .'</td>
+                    ';
+                     if ($rows['CuentaTipo']=="2") {
+                       $tabla.='<td><span class="badge badge-info">Lider</span></td>';
+                    }else{
+                       $tabla.='<td><span class="badge badge-warning">Administrador</span></td>'; 
+                    }                    
+                    if ($rows['CuentaEstado']=="Activo") {
+                       $tabla.='<td><span class="badge badge-success">Activo</span></td>';
+                    }else{
+                       $tabla.='<td><span class="badge badge-warning">Inactivo</span></td>'; 
+                    }
+                   
+                    if ($privilegio<=1) {
+                        $tabla.='<td class="accion" style="display:none;">
+                            <button class="btn btn-success btn-sm btnEditar" data-codigo=""  type="button"><i class="fa fa-edit" ></i> </button>
+                            <form data-form="delete" action="'.SERVERURL.'admin/ajax/libroAjax.php" method="POST" class="FormularioAjax" autocomplete="off">
+                                <input type="text" hidden="" name="codigo-delete" value="">
+                                <button class="btn btn-danger btn-sm"  type="submit"><i class="glyphicon glyphicon-trash"></i> </button>
+                            </form>
+                            
+                       
+                        </td>';
+                    }
+ 
+                       
+                $tabla.='</tr>';
+                $contador++;
+            }
+        }else{
+            $tabla.='
+            <tr>
+                <td colspan="8"> No hay registros en el sistema </td>
+            </tr>
+            ';
+        }
+
+        $tabla.='     </tbody>
+                    </table>
+                 </div>';
+        return $tabla;
+    }

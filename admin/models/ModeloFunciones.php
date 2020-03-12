@@ -24,6 +24,13 @@ class ModeloFunciones extends mainModel
         $sql->execute();
         return $sql; 
     }
+     protected function lisTablaModeloProvincia($tabla, $id, $op)
+    {
+        $sql= mainModel::conectar()->prepare("SELECT * FROM $tabla WHERE $op=:Id");
+        $sql->bindParam(":Id",$id);
+        $sql->execute();
+        return $sql; 
+    }
     public function listarMision()
     {
         
@@ -35,6 +42,13 @@ class ModeloFunciones extends mainModel
     {
         
         $sql= mainModel::conectar()->prepare("SELECT * FROM libro WHERE estadoLibro !='0'");
+        $sql->execute();
+        return $sql; 
+    }
+    public function listarCampania()
+    {
+        
+        $sql= mainModel::conectar()->prepare("SELECT * FROM campania WHERE estadoCampania !='0'");
         $sql->execute();
         return $sql; 
     }

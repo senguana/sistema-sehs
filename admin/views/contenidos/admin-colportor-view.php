@@ -4,7 +4,7 @@
  $colp = new ControladorColportor();
  ?>
   <?php 
- if ( $_SESSION['cuenta_tipo_sehs']!=2 ) {
+ if ( $_SESSION['cuenta_tipo_sehs']!=1 ) {
    echo $lc->forzar_cerrar_sesion_controlador();
  }
  ?>
@@ -21,6 +21,26 @@
       <div class="col-md-12 col-sm-12 ">
         <div class="x_panel">
           <div class="x_title">
+            <div class="col-md-3 col-sm-9 ">
+              <label>Seleccionar campaña:</label>
+              <select class="form-control">
+                <option>Linaje Real </option>
+                <option>Option one</option>
+                <option>Option two</option>
+                <option>Option three</option>
+                <option>Option four</option>
+              </select>
+            </div>
+            <div class="col-md-3 col-sm-9 ">
+              <label for="">Seleccionar provincia:</label>
+              <select class="form-control">
+                <option>Morona Santiago</option>
+                <option>Option one</option>
+                <option>Option two</option>
+                <option>Option three</option>
+                <option>Option four</option>
+              </select>
+            </div>
             <ul class="nav navbar-right panel_toolbox">
               <li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#NuevoColportor"><i class="fa fa-plus"></i> Nuevo colportor</button>
               </li>
@@ -32,7 +52,7 @@
                 <div class="col-sm-12">
                   
                    <?php 
-                   echo $colp->tabla_controlador_colportor($_SESSION['privilegio_sehs'],  $_SESSION['cuenta_tipo_sehs'], $_SESSION['ColportorProvincia']);
+                   echo $colp->admin_tabla_controlador_colportor($_SESSION['privilegio_sehs'],  $_SESSION['cuenta_tipo_sehs']);
                 ?>
                 </div>
             </div>

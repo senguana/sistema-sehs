@@ -66,6 +66,7 @@
         $listarPais    = $listarFuncion->listarPais();
         $listarPais1    = $listarFuncion->listarPais();
         $selectLibro    = $listarFuncion->listarLibro();
+        $selectCampania = $listarFuncion->listarCampania();
         ?>
         <?php require_once $vistaR; ?>
         

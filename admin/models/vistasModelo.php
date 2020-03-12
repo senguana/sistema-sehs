@@ -8,7 +8,7 @@
  	
  	protected function obtener_vistas_modelo($vistas)
  	{
- 		$listaBlanca= ['home','admin','usuario','user','empresa','campania','permisoUsuario','usuario','crear-usuario','colportor','libros','facturas','nueva-factura','editar-factura'];
+ 		$listaBlanca= ['home','admin','admin-colportor','editar-usuario','perfil','clientes','usuario','user','empresa','campania','gestionar-campania','usuario','crear-usuario','colportor','libros','facturas','nueva-factura','editar-factura'];
 
  		if (in_array($vistas, $listaBlanca)) {
  			if (is_file("./views/contenidos/".$vistas."-view.php")) {

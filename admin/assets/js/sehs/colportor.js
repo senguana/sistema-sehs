@@ -112,7 +112,7 @@ $(document).ready(function(){
     	}
     }
 	function listarProvincia() {
-		$.post('ajax/funcionesAjax.php?op=listarProvincia', 'id_pais='+ $('#seleccionar-pais').val(),  function(r){
+		$.post('ajax/funcionesAjax.php?op=listarProvincia', 'id_pais='+$('#seleccionar-pais').val(),  function(r){
 		$('#seleccionar-provincia').html(r);
 		console.log(r)
 		});
@@ -122,7 +122,7 @@ $(document).ready(function(){
     })
 	function listarCiudad() {
 		$.post('ajax/funcionesAjax.php?op=listarCiudad', 'id_provincia='+ $('#seleccionar-provincia').val(),  function(r){
-		$('#seleccionar-ciudad-up').html(r);
+		$('#seleccionar-ciudad').html(r);
 		console.log(r)
 		});
 	}

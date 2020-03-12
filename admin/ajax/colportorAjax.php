@@ -1,7 +1,7 @@
 <?php 
  $peticionAjax= true;
  require_once '../core/configGeneral.php';
- if (isset($_POST['dni-reg']) || isset($_POST['codigo']) || isset($_POST['codigo_delete']) || isset($_POST['id']) ) {
+ if (isset($_POST['dni-reg']) || isset($_POST['codigo']) || isset($_POST['codigo_delete']) || isset($_POST['id']) || isset($_POST['data_usuario'])) {
 
  	require_once '../controllers/ControladorColportor.php';
  	$insColpor = new ControladorColportor();
@@ -27,7 +27,15 @@
 		}
 		echo json_encode($json);
 	}
-	
+	//capturar datos para agregar
+	if (isset($_POST['data_usuario'])) {
+	    $json = array();
+		$filesA = $insColpor->datos_controlador_colportor("data_usuario", 0);
+		while ($campos = $filesA->fetch()) {
+			$json[] = $campos;
+		}
+		echo json_encode($json);
+	}
 //   actualiar Campania
 	if (isset($_POST['codigo_campania-up']) && isset($_POST['nombre_campania-up'])) {
 		echo $insCampania->actualizar_campania_controlador(); 

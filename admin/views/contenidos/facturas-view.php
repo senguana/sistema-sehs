@@ -5,7 +5,7 @@ require_once 'controllers/ControladorNuevaFactura.php';
 $filesNF = new ControladorNuevaFactura(); 
 ?>
   <?php 
- if ( $_SESSION['cuenta_tipo_sehs'] >=3) {
+ if ( $_SESSION['cuenta_tipo_sehs']>2 ) {
    echo $lc->forzar_cerrar_sesion_controlador();
  }
  ?>

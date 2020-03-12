@@ -20,6 +20,22 @@
             echo '<option value="' . $reg->id_ciudad. '">' . $reg->NombreCiudad	 . '</option>';
         }
  		break;
+    case 'listarCiudad1':
+        $id_provincia = $_POST['id_provincia'];
+        $varListarP = $funciones->lisTablaControlador("ciudad", $id_provincia);
+        $dato = $varListarP->fetch();
+        echo json_encode($dato);
+        break;
+    case 'listar_provincia':
+    	 $varListarP = $funciones->lisTablaControladorProvincia();
+      $i= 1;
+        while ($reg = $varListarP->fetch(PDO::FETCH_OBJ)) {
+            echo '<li>
+                  <p><input type="radio" onchange="mos($(this).val())" class="flat" value="' . $reg->id_provincia . '" id="selector-provincia" name="optionsProvincia"> '. $i++ . '.-' . $reg->NombreProvincia. '<input type="hidden" id="selector_ciudad" value="'.$reg->id_ciudad. '" name=""> <span id="' . '">('.$reg->NombreCiudad . ')</span></p>
+                  <div id="input"></div>
+                  </li>';
+        }
+    	break;
  	default:
  		# code...
  		break;

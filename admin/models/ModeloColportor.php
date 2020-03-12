@@ -40,6 +40,8 @@ class ModeloColportor extends mainModel
         }elseif($tipo == "verDetalle"){
             $query = mainModel::conectar()->prepare("SELECT * FROM colportor c INNER JOIN pais p ON c.ColportorPaisId = p.id_pais INNER JOIN provincia pv ON c.ColportorProvinciaId = pv.id_provincia INNER JOIN ciudad cd ON c.ColportorCiudadId = cd.id_ciudad INNER JOIN mision m ON c.ColportorMisionId = m.id_mision WHERE ColportorCodigo=:Codigo");
             $query->bindParam(":Codigo", $codigo);
+        }elseif($tipo == "data_usuario"){
+            $query = mainModel::conectar()->prepare("SELECT * FROM colportor c INNER JOIN cuenta ct ON c.CuentaCodigo = ct.CuentaCodigo WHERE ColportorEstado='1'");
         }
         $query->execute();
 

@@ -1,3 +1,11 @@
+<?php 
+  if ( $_SESSION['cuenta_tipo_sehs']==1) {
+       $tipo = "admin";
+   }else{
+       $tipo = "user";
+   }
+
+   ?>
 <div class="top_nav">
   <div class="nav_menu">
       <div class="nav toggle">
@@ -10,7 +18,7 @@
             <img src="<?php echo SERVERURL; ?>admin/assets/images/avatars/<?php echo $_SESSION['foto_sehs']; ?>">
           </a>
           <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item"  href="javascript:;"> Profile</a>
+            <a class="dropdown-item"  href="<?php echo SERVERURL; ?>admin/perfil/<?php echo $tipo."/".$lc->encryption($_SESSION['codigo_cuenta_sehs']);?>/"> Profile</a>
               <a class="dropdown-item"  href="javascript:;">
                 <span class="badge bg-red pull-right">50%</span>
                 <span>Settings</span>
